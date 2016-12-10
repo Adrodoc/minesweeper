@@ -35,8 +35,8 @@ public class MinesweeperFrame extends JFrame {
     if (btnSolve == null) {
       btnSolve = new JButton("Solve");
       btnSolve.addActionListener(e -> {
-        MinesweeperSolver solver = new MinesweeperSolver();
-        solver.solve(getMinesweeperPanel().getButtons(), new Coordinate2D(5, 5));
+        MinesweeperSolver solver = new MinesweeperSolver(getMinesweeperPanel().getButtons());
+        solver.solve(new Coordinate2D(5, 5));
       });
     }
     return btnSolve;

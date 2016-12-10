@@ -155,13 +155,7 @@ public class MinesweeperPanel extends JPanel {
         }
       });
       addActionListener(e -> {
-        try {
-          onLeftClick();
-        } catch (GameWonException ex) {
-          win(coordinate);
-        } catch (GameLostException ex) {
-          loose(ex.getMineCoordinate());
-        }
+        onLeftClick();
       });
     }
 
@@ -171,7 +165,17 @@ public class MinesweeperPanel extends JPanel {
       }
     }
 
-    public void onLeftClick() throws GameWonException, GameLostException {
+    public void onLeftClick() {
+      try {
+        handleLeftClick();
+      } catch (GameWonException ex) {
+        win(coordinate);
+      } catch (GameLostException ex) {
+        loose(ex.getMineCoordinate());
+      }
+    }
+
+    private void handleLeftClick() throws GameWonException, GameLostException {
       if (isRevealed()) {
         Collection<MinesweeperButton> neighbours = buttons.getNeighbours(coordinate);
         long flagCount = neighbours.stream().filter(b -> b.state == ButtonState.FLAG).count();
@@ -199,7 +203,7 @@ public class MinesweeperPanel extends JPanel {
       Collection<MinesweeperButton> neighbours = buttons.getNeighbours(coordinate);
       for (MinesweeperButton button : neighbours) {
         if (!button.isRevealed()) {
-          button.onLeftClick();
+          button.handleLeftClick();
         }
       }
     }
