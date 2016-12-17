@@ -37,7 +37,7 @@ public class MinesweeperSolver {
     if (!state.isRevealed())
       return false;
     Coordinate2D coordinate = button.getCoordinate();
-    int mineCount = button.getState().getDisplayedMineCount();
+    int mineCount = getDisplayedMineCount(button);
     Collection<MinesweeperButton> neighbours =
         Collections2.filter(grid.getNeighbours(coordinate), b -> !b.getState().isRevealed());
     boolean result = false;
@@ -56,26 +56,39 @@ public class MinesweeperSolver {
     ButtonState state = button.getState();
     if (!state.isRevealed())
       return false;
-    Coordinate2D coordinate = button.getCoordinate();
-    int mineCount = button.getState().getDisplayedMineCount();
-    long flagCount = grid.getNeighbours(coordinate).stream()
-        .filter(b -> b.getState() == ButtonState.FLAG).count();
-    long hiddenCount = grid.getNeighbours(coordinate).stream()
-        .filter(b -> b.getState() != ButtonState.FLAG && !b.getState().isRevealed()).count();
-    if (mineCount == flagCount && hiddenCount > 0) {
+    int mineCount = getDisplayedMineCount(button);
+    long flagCount = getFlagCount(button);
+    long hiddenCount = getHiddenCount(button);
+    if (mineCount == flagCount && flagCount != hiddenCount) {
       button.onLeftClick();
       return true;
     }
     return false;
   }
 
-  private void flag(MinesweeperButton neighbour) {
-    ButtonState state = neighbour.getState();
+  private int getDisplayedMineCount(MinesweeperButton button) {
+    return button.getState().getDisplayedMineCount();
+  }
+
+  private long getFlagCount(MinesweeperButton button) {
+    return getNeighbours(button).stream().filter(b -> b.getState() == ButtonState.FLAG).count();
+  }
+
+  private long getHiddenCount(MinesweeperButton button) {
+    return getNeighbours(button).stream().filter(b -> !b.getState().isRevealed()).count();
+  }
+
+  private Collection<MinesweeperButton> getNeighbours(MinesweeperButton button) {
+    return grid.getNeighbours(button.getCoordinate());
+  }
+
+  private void flag(MinesweeperButton button) {
+    ButtonState state = button.getState();
     if (state == ButtonState.NORMAL) {
-      neighbour.onRightClick();
+      button.onRightClick();
     } else if (state == ButtonState.QUESTION_MARK) {
-      neighbour.onRightClick();
-      neighbour.onRightClick();
+      button.onRightClick();
+      button.onRightClick();
     }
   }
 }
