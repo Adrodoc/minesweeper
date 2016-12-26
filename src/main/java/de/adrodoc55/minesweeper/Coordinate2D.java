@@ -1,5 +1,8 @@
 package de.adrodoc55.minesweeper;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
@@ -18,6 +21,24 @@ public class Coordinate2D {
 
   public int getY() {
     return y;
+  }
+
+  public boolean isPositive() {
+    return x >= 0 && y >= 0;
+  }
+
+  public boolean isNegative() {
+    return x < 0 && y < 0;
+  }
+
+  public Collection<Coordinate2D> getNeighbours() {
+    Collection<Coordinate2D> result = new ArrayList<>(8);
+    for (int y = this.y - 1; y <= this.y + 1; y++) {
+      for (int x = this.x - 1; x <= this.x + 1; x++) {
+        result.add(new Coordinate2D(x, y));
+      }
+    }
+    return result;
   }
 
   @Override
