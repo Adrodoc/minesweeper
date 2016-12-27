@@ -20,7 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class MinesweeperPanel extends JPanel {
+public class MinesweeperPanel extends JPanel implements GameEndingHandler {
   private static final long serialVersionUID = 1L;
 
   private final int height;
@@ -81,14 +81,6 @@ public class MinesweeperPanel extends JPanel {
     }
   }
 
-  public boolean checkWinCondition(Coordinate2D pressedByUser) {
-    boolean won = isWon();
-    if (won) {
-      win(pressedByUser);
-    }
-    return won;
-  }
-
   private boolean isWon() {
     for (MinesweeperButton button : buttons) {
       if (!button.isRevealed() && !button.getField().isMine()) {
@@ -98,12 +90,14 @@ public class MinesweeperPanel extends JPanel {
     return true;
   }
 
-  private void win(Coordinate2D pressedByUser) {
-    terminateGame(pressedByUser, "GEWONNEN!!!");
+  @Override
+  public void win(GameWonException ex) {
+    terminateGame(ex.getCoordinate(), "GEWONNEN!!!");
   }
 
-  public void loose(Coordinate2D pressedByUser) {
-    terminateGame(pressedByUser, "Spiel beendet!");
+  @Override
+  public void loose(GameLostException ex) {
+    terminateGame(ex.getCoordinate(), "Spiel beendet!");
   }
 
   private void terminateGame(Coordinate2D pressedByUser, String title) {
@@ -155,7 +149,13 @@ public class MinesweeperPanel extends JPanel {
         }
       });
       addActionListener(e -> {
-        onLeftClick();
+        try {
+          onLeftClick();
+        } catch (GameWonException ex) {
+          win(ex);
+        } catch (GameLostException ex) {
+          loose(ex);
+        }
       });
     }
 
@@ -165,17 +165,7 @@ public class MinesweeperPanel extends JPanel {
       }
     }
 
-    public void onLeftClick() {
-      try {
-        handleLeftClick();
-      } catch (GameWonException ex) {
-        win(coordinate);
-      } catch (GameLostException ex) {
-        loose(ex.getMineCoordinate());
-      }
-    }
-
-    private void handleLeftClick() throws GameWonException, GameLostException {
+    public void onLeftClick() throws GameWonException, GameLostException {
       if (isRevealed()) {
         Collection<MinesweeperButton> neighbours = buttons.getNeighbours(coordinate);
         long flagCount = neighbours.stream().filter(b -> b.state == ButtonState.FLAG).count();
@@ -195,7 +185,7 @@ public class MinesweeperPanel extends JPanel {
         clickNeighbours();
       }
       if (isWon()) {
-        throw new GameWonException();
+        throw new GameWonException(coordinate);
       }
     }
 
@@ -203,7 +193,7 @@ public class MinesweeperPanel extends JPanel {
       Collection<MinesweeperButton> neighbours = buttons.getNeighbours(coordinate);
       for (MinesweeperButton button : neighbours) {
         if (!button.isRevealed()) {
-          button.handleLeftClick();
+          button.onLeftClick();
         }
       }
     }

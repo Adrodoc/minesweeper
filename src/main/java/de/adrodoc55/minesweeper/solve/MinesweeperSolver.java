@@ -15,32 +15,43 @@ import com.google.common.collect.Collections2;
 
 import de.adrodoc55.minesweeper.ButtonState;
 import de.adrodoc55.minesweeper.Coordinate2D;
+import de.adrodoc55.minesweeper.GameEndingHandler;
+import de.adrodoc55.minesweeper.GameLostException;
+import de.adrodoc55.minesweeper.GameWonException;
 import de.adrodoc55.minesweeper.Grid;
 import de.adrodoc55.minesweeper.MinesweeperPanel.MinesweeperButton;
 
 public class MinesweeperSolver {
   private final Grid<MinesweeperButton> grid;
+  private final GameEndingHandler gameEndingHandler;
 
-  public MinesweeperSolver(Grid<MinesweeperButton> grid) {
+  public MinesweeperSolver(Grid<MinesweeperButton> grid, GameEndingHandler gameEndingHandler) {
     this.grid = checkNotNull(grid, "grid == null!");
+    this.gameEndingHandler = checkNotNull(gameEndingHandler, "gameEndingHandler == null!");
   }
 
   public void solve(Coordinate2D start) {
     grid.getElement(start).doClick();
-    while (true) {
-      boolean actionPerformed = false;
-      for (MinesweeperButton button : grid) {
-        actionPerformed |= flagObviousMines(button);
-        actionPerformed |= revealObviousFields(button);
+    try {
+      while (true) {
+        boolean actionPerformed = false;
+        for (MinesweeperButton button : grid) {
+          actionPerformed |= flagObviousMines(button);
+          actionPerformed |= revealObviousFields(button);
+        }
+        actionPerformed |= advancedSolving();
+        if (!actionPerformed) {
+          break;
+        }
       }
-      actionPerformed |= advancedSolving();
-      if (!actionPerformed) {
-        break;
-      }
+    } catch (GameWonException ex) {
+      gameEndingHandler.win(ex);
+    } catch (GameLostException ex) {
+      gameEndingHandler.loose(ex);
     }
   }
 
-  private boolean advancedSolving() {
+  private boolean advancedSolving() throws GameWonException, GameLostException {
     boolean actionPerformed = false;
     for (MinesweeperButton button : grid) {
       if (button.getState().getDisplayedMineCount() == -1)
@@ -153,7 +164,8 @@ public class MinesweeperSolver {
     return result;
   }
 
-  private boolean revealObviousFields(MinesweeperButton button) {
+  private boolean revealObviousFields(MinesweeperButton button)
+      throws GameWonException, GameLostException {
     ButtonState state = button.getState();
     if (!state.isRevealed())
       return false;
