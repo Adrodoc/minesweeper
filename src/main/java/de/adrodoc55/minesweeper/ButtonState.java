@@ -15,11 +15,36 @@ public enum ButtonState {
   SIX(6), //
   SEVEN(7), //
   EIGHT(8), //
-  NORMAL("field.png", "selected_field.png"), //
-  FLAG("flag_field.png", "selected_flag_field.png"), //
-  QUESTION_MARK("question_mark_field.png", "selected_question_mark_field.png"), //
-  MINE("mine_field.png"), //
-  EXPLODED_MINE("exploded_mine_field.png"),//
+  NORMAL("field.png", "selected_field.png") {
+    @Override
+    public String toString() {
+      return "N";
+    }
+  }, //
+  FLAG("flag_field.png", "selected_flag_field.png") {
+    @Override
+    public String toString() {
+      return "F";
+    }
+  }, //
+  QUESTION_MARK("question_mark_field.png", "selected_question_mark_field.png") {
+    @Override
+    public String toString() {
+      return "?";
+    }
+  }, //
+  MINE("mine_field.png") {
+    @Override
+    public String toString() {
+      return "M";
+    }
+  }, //
+  EXPLODED_MINE("exploded_mine_field.png") {
+    @Override
+    public String toString() {
+      return "E";
+    }
+  },//
   ;
 
   private static ImageIcon createIcon(String name) {
@@ -56,6 +81,10 @@ public enum ButtonState {
     return rolloverIcon == null;
   }
 
+  public boolean isUnknown() {
+    return this == NORMAL || this == QUESTION_MARK;
+  }
+
   public ImageIcon getDefaultIcon() {
     return defaultIcon;
   }
@@ -66,5 +95,10 @@ public enum ButtonState {
 
   public int getDisplayedMineCount() {
     return displayedMineCount;
+  }
+
+  @Override
+  public String toString() {
+    return String.valueOf(displayedMineCount);
   }
 }

@@ -35,7 +35,9 @@ public class Coordinate2D {
     Collection<Coordinate2D> result = new ArrayList<>(8);
     for (int y = this.y - 1; y <= this.y + 1; y++) {
       for (int x = this.x - 1; x <= this.x + 1; x++) {
-        result.add(new Coordinate2D(x, y));
+        if (y != this.y || x != this.x) {
+          result.add(new Coordinate2D(x, y));
+        }
       }
     }
     return result;

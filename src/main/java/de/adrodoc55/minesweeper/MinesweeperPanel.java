@@ -262,5 +262,11 @@ public class MinesweeperPanel extends JPanel {
     private MinesweeperField getField() {
       return getGrid(coordinate).getElement(coordinate);
     }
+
+    @Override
+    public String toString() {
+      return state.toString();
+    }
+
   }
 }

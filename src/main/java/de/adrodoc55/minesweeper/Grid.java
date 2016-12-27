@@ -54,17 +54,18 @@ public class Grid<E> extends AbstractCollection<E> {
     return list.get(i);
   }
 
-  public Collection<E> getNeighbours(Coordinate2D coordinate) {
+  public Collection<E> getElements(Collection<Coordinate2D> coordinates) {
     Collection<E> result = new ArrayList<>();
-    for (int y = coordinate.getY() - 1; y <= coordinate.getY() + 1; y++) {
-      for (int x = coordinate.getX() - 1; x <= coordinate.getX() + 1; x++) {
-        E element = getElement(new Coordinate2D(x, y));
-        if (element != null && (x != coordinate.getX() || y != coordinate.getY())) {
-          result.add(element);
-        }
-      }
+    for (Coordinate2D coordinate : coordinates) {
+      E element = getElement(coordinate);
+      if (element != null)
+        result.add(element);
     }
     return result;
+  }
+
+  public Collection<E> getNeighbours(Coordinate2D coordinate) {
+    return getElements(coordinate.getNeighbours());
   }
 
   @Override
@@ -75,5 +76,17 @@ public class Grid<E> extends AbstractCollection<E> {
   @Override
   public int size() {
     return size;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    for (ImmutableList<E> row : matrix) {
+      for (E element : row) {
+        sb.append(element);
+      }
+      sb.append('\n');
+    }
+    return sb.toString();
   }
 }
