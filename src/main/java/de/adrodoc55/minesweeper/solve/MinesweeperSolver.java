@@ -65,7 +65,7 @@ public class MinesweeperSolver {
           .collect(Collectors.toSet());
       for (MinesweeperButton knownNeighbour : knownNeighbours) {
         Collection<MinesweeperButton> a = new ArrayList<>(unknownNeighbours);
-        Collection<MinesweeperButton> b = getUnknownNeighbours(knownNeighbour);
+        Collection<MinesweeperButton> b = new ArrayList<>(getUnknownNeighbours(knownNeighbour));
         Collection<MinesweeperButton> intersection = intersection(a, b);
         a.removeAll(intersection);
         b.removeAll(intersection);
