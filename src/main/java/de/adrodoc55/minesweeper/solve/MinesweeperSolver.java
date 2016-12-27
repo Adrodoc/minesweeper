@@ -93,36 +93,6 @@ public class MinesweeperSolver {
       }
     }
     return actionPerformed;
-    // groups.clear();
-    // for (MinesweeperButton button : grid) {
-    // if (!button.getState().isRevealed())
-    // continue;
-    // List<MinesweeperButton> hiddens = getHiddenNeighbours(button);
-    // if (hiddens.isEmpty())
-    // continue;
-    // int mineCount = getDisplayedMineCount(button);
-    //
-    // Set<ButtonGroup> intersectingGroups = new HashSet<>();
-    // for (ButtonGroup group : intersectingGroups) {
-    // for (MinesweeperButton hidden : hiddens) {
-    // if (group.getButtons().contains(hidden)) {
-    // Collection<MinesweeperButton> intersection = new ArrayList<>(group.getButtons());
-    // int max = Math.min(a, b)
-    // if(intersection.retainAll(hiddens)) {
-    // intersectingGroups.add(new ButtonGroup(min, max, intersection));
-    // } else {
-    // group.setMin(min);
-    // group.setMax(max);
-    // }
-    // }
-    // }
-    // }
-    // groups.add(new ButtonGroup(mineCount, mineCount, hiddens));
-    // for (ButtonGroup intersecting : intersectingGroups) {
-    //
-    // }
-    // }
-    //
   }
 
   private Stream<MinesweeperButton> streamNumberNeighbours(Collection<MinesweeperButton> buttons) {
