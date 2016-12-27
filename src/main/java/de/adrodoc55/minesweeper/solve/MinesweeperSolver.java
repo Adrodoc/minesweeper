@@ -91,13 +91,13 @@ public class MinesweeperSolver {
         long maxB = min(b.size(), missingB - minInt);
         if (maxA <= 0) {
           for (MinesweeperButton aButton : a) {
-            aButton.onLeftClick();
+            reveal(aButton);
             actionPerformed = true;
           }
         }
         if (maxB <= 0) {
           for (MinesweeperButton bButton : b) {
-            bButton.onLeftClick();
+            reveal(bButton);
             actionPerformed = true;
           }
         }
@@ -173,7 +173,7 @@ public class MinesweeperSolver {
     long flagCount = getFlagCount(button);
     long hiddenCount = getHiddenNeighbourCount(button);
     if (mineCount == flagCount && flagCount != hiddenCount) {
-      button.onLeftClick();
+      reveal(button);
       return true;
     }
     return false;
@@ -189,6 +189,10 @@ public class MinesweeperSolver {
 
   private Collection<MinesweeperButton> getNeighbours(MinesweeperButton button) {
     return grid.getNeighbours(button.getCoordinate());
+  }
+
+  private void reveal(MinesweeperButton button) throws GameWonException, GameLostException {
+    button.onLeftClick();
   }
 
   private void flag(MinesweeperButton button) {
