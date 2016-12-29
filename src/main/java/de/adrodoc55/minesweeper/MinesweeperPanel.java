@@ -169,7 +169,7 @@ public class MinesweeperPanel extends JPanel implements GameEndingHandler {
       if (isRevealed()) {
         Collection<MinesweeperButton> neighbours = buttons.getNeighbours(coordinate);
         long flagCount = neighbours.stream().filter(b -> b.state == ButtonState.FLAG).count();
-        if (flagCount == grid.check(coordinate)) {
+        if (flagCount == getGrid(coordinate).check(coordinate)) {
           clickNeighbours();
         }
         return;
